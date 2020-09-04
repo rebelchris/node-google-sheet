@@ -1,0 +1,22 @@
+{
+  "name": "google-sheet",
+  "version": "1.0.0",
+  "description": "Google Sheet Node integration",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rebelchris/node-google-sheet.git"
+  },
+  "author": "Chris Bongers",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rebelchris/node-google-sheet/issues"
+  },
+  "homepage": "https://github.com/rebelchris/node-google-sheet#readme",
+  "dependencies": {
+    "googleapis": "^39.2.0"
+  }
+}
