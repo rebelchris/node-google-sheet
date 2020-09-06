@@ -3,7 +3,7 @@ const readline = require('readline');
 const { google } = require('googleapis');
 
 // If modifying these scopes, delete token.json.
-const SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly'];
+const SCOPES = ['https://www.googleapis.com/auth/spreadsheets'];
 // The file token.json stores the user's access and refresh tokens, and is
 // created automatically when the authorization flow completes for the first
 // time.
@@ -13,7 +13,7 @@ const TOKEN_PATH = 'token.json';
 fs.readFile('credentials.json', (err, content) => {
     if (err) return console.log('Error loading client secret file:', err);
     // Authorize a client with credentials, then call the Google Sheets API.
-    authorize(JSON.parse(content), listMajors);
+    authorize(JSON.parse(content), writeData);
 });
 
 /**
@@ -67,26 +67,34 @@ function getNewToken(oAuth2Client, callback) {
 }
 
 /**
- * Prints the names and majors of students in a sample spreadsheet:
- * @see https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
- * @param {google.auth.OAuth2} auth The authenticated Google OAuth client.
+ * Writes data to our Google sheet
  */
-function listMajors(auth) {
+function writeData(auth) {
     const sheets = google.sheets({ version: 'v4', auth });
-    sheets.spreadsheets.values.get({
-        spreadsheetId: '1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms',
-        range: 'Class Data!A2:E',
-    }, (err, res) => {
-        if (err) return console.log('The API returned an error: ' + err);
-        const rows = res.data.values;
-        if (rows.length) {
-            console.log('Name, Major:');
-            // Print columns A and E, which correspond to indices 0 and 4.
-            rows.map((row) => {
-                console.log(`${row[0]}, ${row[4]}`);
-            });
+    let values = [
+        [
+            'Chris',
+            'Male',
+            '4. Senior',
+            'FL',
+            'Art',
+            'Baseball'
+        ],
+    ];
+    const resource = {
+        values,
+    };
+    sheets.spreadsheets.values.append({
+        spreadsheetId: '1XnbJ5JHeJS2KsTzz6wXtwASb5mkwkICn_XP_pDJIyTA',
+        range: 'Class Data!A1',
+        valueInputOption: 'RAW',
+        resource: resource,
+    }, (err, result) => {
+        if (err) {
+            // Handle error
+            console.log(err);
         } else {
-            console.log('No data found.');
+            console.log('%d cells updated on range: %s', result.data.updates.updatedCells, result.data.updates.updatedRange);
         }
     });
 }
